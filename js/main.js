@@ -88,20 +88,14 @@
         return {mesh: mesh};
     };
 
-    var now = function() {
-        return performance && performance.now() || Date.now();
-    };
-
-    var REVS_PER_SECOND = 0.01;
+    var REVS_PER_MINUTE = 5;
 
     var render = function () {
-        var _now = now();
-        if (_now - startTime > 6000) {
-    //        return;
-        }
         requestAnimationFrame(render);
 
-        var angle = _now * REVS_PER_SECOND * 2 * Math.PI / 1000;
+        var delta = clock.getDelta(),
+            time = clock.getElapsedTime(),
+            angle = time * REVS_PER_MINUTE/60 * 2 * Math.PI;
         camera.position.set(MID_X + EYE_DISTANCE * Math.cos(angle), MID_Y + EYE_HEIGHT, MID_Z + EYE_DISTANCE * Math.sin(angle));
 
         camera.lookAt(new THREE.Vector3(MID_X, MID_Y, MID_Z));
@@ -109,7 +103,6 @@
         lines.forEach(function(line) {
             line.addPoint();
         });
-
 
         renderer.render(scene, camera);
     };
@@ -135,6 +128,6 @@
     var axes = new Axes();
     scene.add(axes.mesh);
 
-    var startTime = now();
+    var clock = new THREE.Clock();
     render();
 })();
