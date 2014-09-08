@@ -128,9 +128,9 @@
     var startPoint3 = startPoint2.clone();
     startPoint3.x += 0.01;
     var lines = [
-        new Line(0xff0000, startPoint),
-        new Line(0x00ff00, startPoint2),
-        new Line(0x0000ff, startPoint3)
+        new Line(0xff5600, startPoint),
+        new Line(0x5fff00, startPoint2),
+        new Line(0x1387ff, startPoint3)
     ];
     lines.forEach(function(line){
         scene.add(line.mesh);
