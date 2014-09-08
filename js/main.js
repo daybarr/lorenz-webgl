@@ -58,12 +58,16 @@
                 geometry.vertices.push(points[pointsRendered++]);
                 geometry.verticesNeedUpdate = true;
             }
+            return pointsRendered < MAX_POINTS;
         };
 
         return {
             mesh: mesh,
             lastPoint: function() {
                 return points[pointsRendered-1];
+            },
+            numPoints: function() {
+                return pointsRendered;
             },
             addPoint: addPoint
         };
@@ -89,6 +93,7 @@
     };
 
     var REVS_PER_MINUTE = 5;
+    var POINTS_PER_SECOND = 60;
 
     var render = function () {
         requestAnimationFrame(render);
@@ -101,7 +106,9 @@
         camera.lookAt(new THREE.Vector3(MID_X, MID_Y, MID_Z));
 
         lines.forEach(function(line) {
-            line.addPoint();
+            for (var i=0; i<Math.floor(POINTS_PER_SECOND * time - line.numPoints()); i++) {
+                line.addPoint();
+            }
         });
 
         renderer.render(scene, camera);
