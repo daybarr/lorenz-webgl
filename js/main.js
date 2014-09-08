@@ -58,7 +58,6 @@
                 geometry.vertices.push(points[pointsRendered++]);
                 geometry.verticesNeedUpdate = true;
             }
-            return pointsRendered < MAX_POINTS;
         };
 
         return {
@@ -68,6 +67,9 @@
             },
             numPoints: function() {
                 return pointsRendered;
+            },
+            isDone: function() {
+                return pointsRendered >= MAX_POINTS;
             },
             addPoint: addPoint
         };
@@ -106,8 +108,10 @@
         camera.lookAt(new THREE.Vector3(MID_X, MID_Y, MID_Z));
 
         lines.forEach(function(line) {
-            for (var i=0; i<Math.floor(POINTS_PER_SECOND * time - line.numPoints()); i++) {
-                line.addPoint();
+            if (!line.isDone()) {
+                for (var i=0; i<Math.floor(POINTS_PER_SECOND * time - line.numPoints()); i++) {
+                    line.addPoint();
+                }
             }
         });
 
@@ -132,8 +136,8 @@
         scene.add(line.mesh);
     });
 
-    var axes = new Axes();
-    scene.add(axes.mesh);
+    // var axes = new Axes();
+    // scene.add(axes.mesh);
 
     var clock = new THREE.Clock();
     render();
