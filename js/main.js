@@ -19,6 +19,8 @@
     var EYE_DISTANCE = Math.max(SIZE_X, SIZE_Z)*2.2;
     var EYE_HEIGHT   = MAX_Y/2;
 
+    var TWO_PI = 2 * Math.PI;
+
     var renderer = new THREE.WebGLRenderer({antialias: true});
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
@@ -52,10 +54,12 @@
         }
 
         var pointsRendered = 1;
-        var addPoint = function() {
+        var addPoint = function(originPoint) {
             if (pointsRendered < MAX_POINTS) {
-                geometry.vertices.shift();
-                geometry.vertices.push(points[pointsRendered++]);
+                geometry.vertices.pop(); // Remove origin point
+                geometry.vertices.shift(); // Remove duplicate point at start
+                geometry.vertices.push(points[pointsRendered++]); // Add new point at end
+                geometry.vertices.push(originPoint); // Add new origin point at end
                 geometry.verticesNeedUpdate = true;
             }
         };
@@ -102,15 +106,17 @@
 
         var delta = clock.getDelta(),
             time = clock.getElapsedTime(),
-            angle = time * REVS_PER_MINUTE/60 * 2 * Math.PI;
+            angle = time * REVS_PER_MINUTE/60 * TWO_PI;
         camera.position.set(MID_X + EYE_DISTANCE * Math.cos(angle), MID_Y + EYE_HEIGHT, MID_Z + EYE_DISTANCE * Math.sin(angle));
 
         camera.lookAt(new THREE.Vector3(MID_X, MID_Y, MID_Z));
 
+        var originPoint = new THREE.Vector3(MID_X + EYE_DISTANCE/1.5 * Math.cos(angle+Math.PI/2), MID_Y + EYE_HEIGHT, MID_Z + EYE_DISTANCE/1.5 * Math.sin(angle+Math.PI/2));
+
         lines.forEach(function(line) {
             if (!line.isDone()) {
                 for (var i=0; i<Math.floor(POINTS_PER_SECOND * time - line.numPoints()); i++) {
-                    line.addPoint();
+                    line.addPoint(originPoint);
                 }
             }
         });
