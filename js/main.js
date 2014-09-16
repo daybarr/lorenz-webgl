@@ -79,25 +79,6 @@
         };
     };
 
-    var Axes = function() {
-        var geometry = new THREE.Geometry();
-        geometry.vertices = [
-            new THREE.Vector3(MIN_X, MID_Y, MID_Z),
-            new THREE.Vector3(MAX_X, MID_Y, MID_Z),
-            new THREE.Vector3(MID_X, MID_Y, MID_Z),
-            new THREE.Vector3(MID_X, MIN_Y, MID_Z),
-            new THREE.Vector3(MID_X, MAX_Y, MID_Z),
-            new THREE.Vector3(MID_X, MID_Y, MID_Z),
-            new THREE.Vector3(MID_X, MID_Y, MIN_Z),
-            new THREE.Vector3(MID_X, MID_Y, MAX_Z)
-        ];
-        var material = new THREE.LineBasicMaterial({
-            color: 0xffff00
-        });
-        var mesh = new THREE.Line(geometry, material);
-        return {mesh: mesh};
-    };
-
     var REVS_PER_MINUTE = 5;
     var POINTS_PER_SECOND = 60;
 
@@ -141,9 +122,6 @@
     lines.forEach(function(line){
         scene.add(line.mesh);
     });
-
-    // var axes = new Axes();
-    // scene.add(axes.mesh);
 
     var clock = new THREE.Clock();
     render();
