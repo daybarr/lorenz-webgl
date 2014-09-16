@@ -1,6 +1,3 @@
-lorenz-webgl
-============
-
 About
 -----
 
