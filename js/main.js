@@ -40,6 +40,7 @@
         var DELTA_T = 0.004;
         var MAX_POINTS = 15000;
 
+        var running = true;
         var point = startPoint;
         var points = [point];
         geometry.vertices.push(point);
@@ -61,19 +62,22 @@
                 geometry.vertices.push(points[pointsRendered++]); // Add new point at end
                 geometry.vertices.push(originPoint); // Add new origin point at end
                 geometry.verticesNeedUpdate = true;
+            } else if (running) {
+                running = false;
+                // Turn "laser" off
+                geometry.vertices.pop();
+                geometry.vertices.push(points[pointsRendered]);
+                geometry.verticesNeedUpdate = true;
             }
         };
 
         return {
             mesh: mesh,
-            lastPoint: function() {
-                return points[pointsRendered-1];
-            },
             numPoints: function() {
                 return pointsRendered;
             },
             isDone: function() {
-                return pointsRendered >= MAX_POINTS;
+                return !running;
             },
             addPoint: addPoint
         };
